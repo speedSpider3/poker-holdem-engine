@@ -8,7 +8,7 @@ It's used as default poker holdem engine for http://botpoker.org.
 
 ## demo
 
-It's possible to run a demo on your local machine by executing the `npm run demo` from the project root folder.
+Make sure you have MongoDB server tools (community works). Once you have the project downloaded and unzipped, or cloned, go to the project root directory and open a command line. Run `npm i` to install the necessary dependencies for the project. Run `mongod` to start MongoDB. This command should start a process, if it exits, or fails to run, then you may need to add a line to your PATH, something like "C:\Program Files\MongoDB\Server\4.4\bin". Once that is running, open another command window in the same root project directory, start the demo by running `npm run demo`.
 
 ## start a tournament
 
