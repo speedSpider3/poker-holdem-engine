@@ -45,6 +45,7 @@ class Tournament {
     gamestate.gameProgressiveId = opts.recoveryId || 1;
     gamestate.handProgressiveId = 1;
     gamestate.tournamentId = tournamentId;
+    gamestate.mode = tournamentSettings.MODE;
 
     const create = getPlayerFactory(LOGGER, this.onFeed.bind(this), tournamentSettings);
 
@@ -115,7 +116,7 @@ class Tournament {
 
     this.state = States.get("active");
 
-    return loop.call(this, LOGGER)
+    return loop.call(this, this.gamestate, LOGGER)
       .then(
         () => {
           this.onTournamentComplete({ tournamentId: this.id });

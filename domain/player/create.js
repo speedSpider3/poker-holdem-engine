@@ -187,8 +187,17 @@ module.exports =
        * @return {Object}
        */
       showdown (gamestate) {
-        const sevenCards = this.cards.concat(gamestate.commonCards);
-        const combinations = getAllCombination(sevenCards, 5);
+        let combinations = [];
+
+        switch (gamestate.mode) {
+          case "Holdem":
+            const sevenCards = this.cards.concat(gamestate.commonCards);
+            combinations = getAllCombination(sevenCards, 5);
+            break;
+          case "5Card":
+            combinations = getAllCombination(this.cards, 5);
+            break;
+        }
 
         const bestPoint =
           sortByRank(combinations)[0];
@@ -196,6 +205,63 @@ module.exports =
         LOGGER.info(`${this.name}: ${formatPoint(bestPoint.rank)}.`, { tag: gamestate.handUniqueId });
 
         return bestPoint;
+      },
+
+      async getDiscards (gamestate) {
+        const payload = Object.create(null);
+        payload.game = gamestate.gameProgressiveId;
+        payload.hand = gamestate.handProgressiveId;
+        payload.spinCount = gamestate.spinCount;
+
+        payload.dealer = gamestate.dealerPosition;
+        payload.sb = gamestate.sb;
+
+        payload.pot = gamestate.pot;
+        payload.sidepots = gamestate.sidepots;
+
+        payload.commonCards = gamestate.commonCards;
+
+        payload.players = gamestate.players
+          .map(
+            (player) => {
+              const playerWithoutCards = {
+                chips: player.chips,
+                chipsBet: player.chipsBet,
+                id: player.id,
+                name: player.name,
+                state: player.state,
+              };
+
+              return this.id !== player.id
+                ? playerWithoutCards
+                : {
+                  cards: player.cards,
+                  ...playerWithoutCards,
+                };
+            }
+          );
+
+        payload.me = gamestate.players.findIndex((player) => player.id === this.id);
+
+        console.log("posting for discard");
+
+        return new Promise((resolve) => {
+          send.post(this.serviceUrl + "discard", {
+            body: payload,
+            json: true,
+            followAllRedirects: true,
+            maxRedirects: 1,
+            timeout: 5000,
+          }, (err, _, discards) => {
+            if (err) {
+              LOGGER.warn(`Request to ${this.serviceUrl} failed, cause ${err.message}.`, { tag: gamestate.handUniqueId });
+
+              discards = [];
+            }
+
+            resolve(discards);
+          });
+        });
       },
 
       /**

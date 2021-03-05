@@ -23,10 +23,20 @@ Task.run =
         }
       };
 
+    let cardCount;
+    switch (gamestate.mode) {
+      default:
+      case "Holdem":
+        cardCount = 2;
+        break;
+      case "5Card":
+        cardCount = 5;
+        break;
+    }
     // Dealer starts to assign private cards
     // starting from the player next the him
     const from = gamestate.dealerPosition;
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < cardCount; i++) {
       loop(gamestate.players, from, assignCard);
     }
 

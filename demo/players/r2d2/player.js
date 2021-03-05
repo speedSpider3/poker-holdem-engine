@@ -11,4 +11,8 @@ exports = module.exports = {
       ? gs.callAmount
       : 0;
   },
+  discard: function (gamestate) {
+    console.log(`My name is ${gamestate.players[gamestate.me].name}, and I discard my whole hand.`);
+    return [0, 1, 2, 3, 4];
+  },
 };

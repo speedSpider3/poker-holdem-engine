@@ -16,4 +16,8 @@ exports = module.exports = {
     console.log(`I'm sadly calling for ${gamestate.callAmount}`);
     return gamestate.callAmount;
   },
+  discard: function (gamestate) {
+    console.log(`My name is ${gamestate.players[gamestate.me].name}, and I discard the second and third card in my hand.`);
+    return [1, 2];
+  },
 };
