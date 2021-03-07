@@ -1,6 +1,6 @@
 {
   "BUYIN": 100,
-  "MODE": "Holdem",
+  "MODE": "5Card",
   "WARMUP": false,
   "WARMUP_GAME": 10,
   "WARMUP_TIME": 10,

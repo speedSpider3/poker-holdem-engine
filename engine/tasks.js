@@ -52,7 +52,9 @@ const preFlop = require("./tasks/game/pre-flop");
 const makePostFlopTask = require("./tasks/game/make-post-flop-task");
 const recap = require("./tasks/game/recap");
 
-const draw = require("./tasks/game/5-card-draw");
+const preDraw = require("./tasks/game/pre-draw");
+const draw = require("./tasks/game/draw");
+const postDraw = require("./tasks/game/post-draw");
 
 const warmup = require("./tasks/warmup-wait");
 const onGameCompleted = require("./tasks/on-game-completed");
@@ -87,7 +89,9 @@ module.exports = (gamestate) => {
     case "5Card":
       playHand = [
         // Ask each player to cover the big blind
+        preDraw,
         draw,
+        postDraw,
         recap,
       ];
       break;

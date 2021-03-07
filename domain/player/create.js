@@ -243,8 +243,6 @@ module.exports =
 
         payload.me = gamestate.players.findIndex((player) => player.id === this.id);
 
-        console.log("posting for discard");
-
         return new Promise((resolve) => {
           send.post(this.serviceUrl + "discard", {
             body: payload,
