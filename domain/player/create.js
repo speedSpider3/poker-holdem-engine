@@ -257,6 +257,13 @@ module.exports =
               discards = [];
             }
 
+            if (discards == null) {
+              discards = [];
+            } else if (typeof discards === "string") {
+              discards = discards.split(",");
+            } else if (typeof discards === "number") {
+              discards = [discards];
+            }
             resolve(discards);
           });
         });
