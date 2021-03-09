@@ -1,8 +1,10 @@
 "use strict";
 
+const STATE = require("../../../domain/game/gamestates.js");
 const task = require("../task");
 const isRunning = require("../utils/is-tournament-running");
 const PlayerState = require("../../../domain/player/states");
+const changeGameState = require("../utils/post-gamestate.js");
 
 const Task = Object.create(task);
 
@@ -67,6 +69,8 @@ Task.run =
 
       LOGGER.info(`${player.name} is eliminated after hand ${gamestate.handProgressiveId}`, { tag: gamestate.handUniqueId });
     }
+
+    await changeGameState(LOGGER, tournament.serviceUrl, gamestate, STATE.ASSIGN_POT);
 
     await tournament.onFeed(gamestate);
   };

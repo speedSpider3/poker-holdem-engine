@@ -1,11 +1,13 @@
 "use strict";
 
+const STATE = require("../../../domain/game/gamestates.js");
 const CARDS = require("poker-deck");
 const shuffle = require("knuth-shuffle").knuthShuffle;
 const task = require("../task");
 const loop = require("../utils/loop-players");
 const isRunning = require("../utils/is-tournament-running");
 const PlayerStates = require("../../../domain/player/states");
+const changeGameState = require("../utils/post-gamestate.js");
 
 const Task = Object.create(task);
 
@@ -14,7 +16,9 @@ Task.name = "Assign private cards";
 Task.shouldRun = isRunning;
 
 Task.run =
-  (_, { gamestate }) => {
+  async (LOGGER, tournament) => {
+    const gamestate = tournament.gamestate;
+
     const deck = shuffle(CARDS.slice(0));
     const assignCard =
       (player) => {
@@ -41,6 +45,8 @@ Task.run =
     }
 
     gamestate.deck = deck;
+
+    await changeGameState(LOGGER, tournament.serviceUrl, gamestate, STATE.POST_DRAW);
   };
 
 module.exports = Task;

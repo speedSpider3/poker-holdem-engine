@@ -1,8 +1,10 @@
 "use strict";
 
+const STATE = require("../../../domain/game/gamestates.js");
 const task = require("../task");
 const isRunning = require("../utils/is-tournament-running");
 const collectBets = require("./bet-loop");
+const changeGameState = require("../utils/post-gamestate.js");
 
 const Task = Object.create(task);
 
@@ -15,6 +17,8 @@ Task.shouldRun =
 Task.run =
   async (LOGGER, tournament) => {
     const gamestate = tournament.gamestate;
+
+    await changeGameState(LOGGER, tournament.serviceUrl, gamestate, STATE.PRE_DRAW);
 
     LOGGER.debug("The pre-draw betting session is starting.", { tag: gamestate.handUniqueId });
 
