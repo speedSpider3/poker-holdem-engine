@@ -39,6 +39,7 @@ class Tournament {
     this.onFeed = opts.onFeed;
     this.onGameComplete = opts.onGameComplete;
     this.onTournamentComplete = opts.onTournamentComplete;
+    this.serviceUrl = this.settings.SERVICE_URL;
 
     const gamestate = {};
 

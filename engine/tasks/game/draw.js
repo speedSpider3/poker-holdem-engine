@@ -1,8 +1,10 @@
 "use strict";
 
+const STATE = require("../../../domain/game/gamestates.js");
 const task = require("../task");
 const isRunning = require("../utils/is-tournament-running");
 const loop = require("../utils/loop-players-async");
+const changeGameState = require("../utils/post-gamestate.js");
 
 const Task = Object.create(task);
 
@@ -13,6 +15,8 @@ Task.shouldRun = isRunning;
 Task.run =
   async (LOGGER, tournament) => {
     const gamestate = tournament.gamestate;
+
+    await changeGameState(LOGGER, tournament.serviceUrl, gamestate, STATE.DRAW);
 
     const startFrom = gamestate.bigBlindPosition;
 
