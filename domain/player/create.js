@@ -249,7 +249,7 @@ module.exports =
             json: true,
             followAllRedirects: true,
             maxRedirects: 1,
-            timeout: 5000,
+            timeout: 60000,
           }, (err, _, discards) => {
             if (err) {
               LOGGER.warn(`Request to ${this.serviceUrl} failed, cause ${err.message}.`, { tag: gamestate.handUniqueId });
@@ -336,7 +336,7 @@ module.exports =
             json: true,
             followAllRedirects: true,
             maxRedirects: 1,
-            timeout: 5000,
+            timeout: 60000,
           }, (err, _, bet) => {
             if (err) {
               LOGGER.warn(`Request to ${this.serviceUrl} failed, cause ${err.message}.`, { tag: gamestate.handUniqueId });
