@@ -104,4 +104,6 @@ module.exports = {
 };
 ```
 
+##5 Card
+
 This repository includes the option to play 5 card poker as well. Players need to implement the '/discard' api to determine what cards to discard. In the tournament-settings.json, the "MODE" property must be set to "5Card" to play.
