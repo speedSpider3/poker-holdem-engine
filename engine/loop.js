@@ -8,11 +8,11 @@ const TASKS = require("./tasks.js");
  * @name loop
  * @this {Tournament}
  */
-async function loop (LOGGER) {
+async function loop (gamestate, LOGGER) {
   // `loop` never returns until
   // current tournament isn't complete.
   while (this.state !== States.get("completed")) {
-    for (const task of TASKS) {
+    for (const task of TASKS(gamestate)) {
       if (task.shouldRun(this)) {
         LOGGER.debug("[TASK]: " + task.name);
         await task.run(LOGGER, this);

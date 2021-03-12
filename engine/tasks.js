@@ -33,26 +33,6 @@ const setupTable = [
   saveSetup,
 ];
 
-const preFlop = require("./tasks/game/pre-flop");
-const makePostFlopTask = require("./tasks/game/make-post-flop-task");
-const recap = require("./tasks/game/recap");
-
-const playHand = [
-  // Ask each player to cover the big blind,
-  // then uncover three common cards.
-  preFlop,
-
-  // Ask each player their bet,
-  // then uncover a new common card.
-  makePostFlopTask("FLOP"),
-
-  makePostFlopTask("TURN"),
-
-  makePostFlopTask("RIVER"),
-
-  recap,
-];
-
 const prepareHandRank = require("./tasks/teardown/rank-hand");
 const assignPot = require("./tasks/teardown/assign-pot");
 const updateGameRank = require("./tasks/teardown/update-game-rank");
@@ -68,6 +48,14 @@ const showdown = [
   updateGameRank,
 ];
 
+const preFlop = require("./tasks/game/pre-flop");
+const makePostFlopTask = require("./tasks/game/make-post-flop-task");
+const recap = require("./tasks/game/recap");
+
+const preDraw = require("./tasks/game/pre-draw");
+const draw = require("./tasks/game/draw");
+const postDraw = require("./tasks/game/post-draw");
+
 const warmup = require("./tasks/warmup-wait");
 const onGameCompleted = require("./tasks/on-game-completed");
 const waitOnPause = require("./tasks/wait-restart");
@@ -76,43 +64,77 @@ const announceCurrentHand = require("./tasks/announce-hand");
 const incrementHandId = require("./tasks/next-hand");
 const announceTournamentEnd = require("./tasks/announce-end");
 
-const Tasks = [
-  warmup,
+module.exports = (gamestate) => {
+  let playHand;
 
-  // Before a new hand starts,
-  // the engine checks the active players.
-  // If there is only one active player,
-  // and all the others are out,
-  // the current game is finished.
-  // TODO
-  onGameCompleted,
+  switch (gamestate.mode) {
+    default:
+    case "Holdem":
+      playHand = [
+        // Ask each player to cover the big blind,
+        // then uncover three common cards.
+        preFlop,
 
-  // Before a new hand starts,
-  // checks if game is on pause.
-  waitOnPause,
+        // Ask each player their bet,
+        // then uncover a new common card.
+        makePostFlopTask("FLOP"),
 
-  waitBeforeHand,
+        makePostFlopTask("TURN"),
 
-  announceCurrentHand,
+        makePostFlopTask("RIVER"),
 
-  // It's a collection of tasks
-  // focused on creating the condition
-  // to play a new hand.
-  // Eg. Pay blind, assign cards...
-  ...setupTable,
+        recap,
+      ];
+      break;
+    case "5Card":
+      playHand = [
+        // Ask each player to cover the big blind
+        preDraw,
+        draw,
+        postDraw,
+        recap,
+      ];
+      break;
+  }
 
-  // It's a collection of tasks
-  // focused on the dynamics of a hand.
-  ...playHand,
+  const Tasks = [
+    warmup,
 
-  // It's a collection of tasks
-  // focused on the completion of an hand.
-  // Determine the winner, assign the pot...
-  ...showdown,
+    // Before a new hand starts,
+    // the engine checks the active players.
+    // If there is only one active player,
+    // and all the others are out,
+    // the current game is finished.
+    // TODO
+    onGameCompleted,
 
-  incrementHandId,
+    // Before a new hand starts,
+    // checks if game is on pause.
+    waitOnPause,
 
-  announceTournamentEnd,
-];
+    waitBeforeHand,
 
-module.exports = Tasks;
+    announceCurrentHand,
+
+    // It's a collection of tasks
+    // focused on creating the condition
+    // to play a new hand.
+    // Eg. Pay blind, assign cards...
+    ...setupTable,
+
+    // It's a collection of tasks
+    // focused on the dynamics of a hand.
+    ...playHand,
+
+    // It's a collection of tasks
+    // focused on the completion of an hand.
+    // Determine the winner, assign the pot...
+    ...showdown,
+
+    incrementHandId,
+
+    announceTournamentEnd,
+  ];
+
+  return Tasks;
+};

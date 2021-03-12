@@ -22,6 +22,10 @@ app.post("/bet", (req, res) => {
   res.status(200).send(player.bet(req.body).toString());
 });
 
+app.post("/discard", (req, res) => {
+  res.status(200).send(player.discard(req.body).toString());
+});
+
 const server = http.Server(app);
 
 server.listen(Number.parseInt(process.env.PORT), () => {

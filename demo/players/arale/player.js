@@ -7,4 +7,8 @@ exports = module.exports = {
 
     return 0;
   },
+  discard: function (gamestate) {
+    console.log(`My name is ${gamestate.players[gamestate.me].name}, and I never discard.`);
+    return [];
+  },
 };
